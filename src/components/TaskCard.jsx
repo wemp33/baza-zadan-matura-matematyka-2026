@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import MathHtml from './MathHtml.jsx'
-import { SESJE_KROTKIE, POZIOMY, FORMULY, TYPY } from '../meta.js'
+import { TERMIN_KROTKI, POZIOMY, FORMULA_TIER, TYPY } from '../meta.js'
 
 export default function TaskCard({ task }) {
   const [open, setOpen] = useState(false)
 
   const crumbs = [
     `Matura ${task.rok}`,
-    SESJE_KROTKIE[task.sesja] || task.sesja,
+    TERMIN_KROTKI[task.termin] || task.termin,
     POZIOMY[task.poziom] || task.poziom,
-    `${FORMULY[task.formula] ? FORMULY[task.formula].split(' ')[0] : task.formula} formuła`,
+    FORMULA_TIER[task.formula_tier] || task.formula_tier,
     `Zad. ${task.numer}`,
   ].join(' • ')
 

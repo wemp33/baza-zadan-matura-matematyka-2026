@@ -1,4 +1,4 @@
-import { SESJE, POZIOMY, FORMULY, TYPY, SORTOWANIE } from '../meta.js'
+import { TERMIN, POZIOMY, FORMULA_TIER, TYPY, SORTOWANIE } from '../meta.js'
 
 function Segmented({ label, hint, value, onChange, options }) {
   return (
@@ -23,7 +23,7 @@ function Segmented({ label, hint, value, onChange, options }) {
   )
 }
 
-export default function Filters({ filters, setFilters, availableDzialy, availablePunkty, counts }) {
+export default function Filters({ filters, setFilters, availableDzialy, availablePunkty, availableRoki, counts }) {
   const set = (patch) => setFilters((f) => ({ ...f, ...patch }))
 
   const toggleDzial = (d) =>
@@ -43,9 +43,10 @@ export default function Filters({ filters, setFilters, availableDzialy, availabl
   const clear = () =>
     setFilters({
       q: '',
-      sesja: 'all',
+      rok: 'all',
+      termin: 'all',
       poziom: 'all',
-      formula: 'all',
+      formulaTier: 'all',
       typ: 'all',
       dzialy: [],
       punkty: [],
@@ -80,12 +81,31 @@ export default function Filters({ filters, setFilters, availableDzialy, availabl
         />
       </div>
 
+      <div className="filter-group">
+        <label className="filter-label" htmlFor="rok">
+          Rok
+        </label>
+        <select
+          id="rok"
+          className="select-input"
+          value={filters.rok}
+          onChange={(e) => set({ rok: e.target.value })}
+        >
+          <option value="all">Wszystkie lata</option>
+          {availableRoki.map((r) => (
+            <option key={r} value={String(r)}>
+              {r}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <Segmented
-        label="Sesja"
-        hint="Maj – termin główny, Czerwiec – termin dodatkowy"
-        value={filters.sesja}
-        onChange={(v) => set({ sesja: v })}
-        options={opt(SESJE, 'Wszystkie')}
+        label="Termin"
+        hint="Główna – sesja majowa, Dodatkowa – sesja czerwcowa/lipcowa (matura dodatkowa)"
+        value={filters.termin}
+        onChange={(v) => set({ termin: v })}
+        options={opt(TERMIN, 'Wszystkie')}
       />
 
       <Segmented
@@ -97,10 +117,10 @@ export default function Filters({ filters, setFilters, availableDzialy, availabl
 
       <Segmented
         label="Formuła"
-        hint="Nowa – formuła 2023, Stara – formuła 2015"
-        value={filters.formula}
-        onChange={(v) => set({ formula: v })}
-        options={opt(FORMULY, 'Wszystkie')}
+        hint="Program nauczania, pod którym zdawano maturę — 2023 (obecna), 2015 lub 2005"
+        value={filters.formulaTier}
+        onChange={(v) => set({ formulaTier: v })}
+        options={opt(FORMULA_TIER, 'Wszystkie')}
       />
 
       <Segmented

@@ -127,6 +127,9 @@ a:hover {
 }
 .print-btn {
   height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 0 15px;
   border-radius: 10px;
   border: 1px solid var(--border-strong);
@@ -137,6 +140,9 @@ a:hover {
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
+}
+.print-btn-icon {
+  flex: none;
 }
 .print-btn:hover {
   background: var(--bg-soft);
@@ -348,6 +354,7 @@ a:hover {
 /* ---------- Results ---------- */
 .results-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 7px;
   margin-bottom: 16px;
@@ -362,10 +369,60 @@ a:hover {
   color: var(--text-faint);
   font-size: 13px;
 }
+.results-page-info {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: 13px;
+}
 .cards {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+/* ---------- Pagination ---------- */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 28px;
+}
+.page-btn {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--bg-elev);
+  color: var(--text-soft);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.13s;
+}
+.page-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.page-btn.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.page-nav {
+  font-weight: 700;
+  padding: 0 14px;
+}
+.page-ellipsis {
+  color: var(--text-faint);
+  padding: 0 2px;
 }
 .empty {
   padding: 48px 20px;
@@ -538,6 +595,11 @@ a:hover {
   overflow-y: hidden;
   padding: 2px 0 6px;
 }
+.mathhtml .katex {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 .mathhtml.inline,
 .mathhtml.inline p {
   display: inline;
@@ -634,21 +696,30 @@ a:hover {
   text-align: center;
 }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 860px) {
+/* ---------- Responsive ----------
+   Breakpoints:
+     >1024px  desktop  — persistent sidebar
+     ≤1024px  tablet   — drawer filters, single column, roomy touch targets
+     ≤640px   phone    — tablet rules + extra compaction
+------------------------------------ */
+@media (max-width: 1024px) {
   .layout {
     grid-template-columns: 1fr;
     gap: 14px;
   }
   .filters-mobile-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
+    min-height: 46px;
     padding: 11px;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
     background: var(--bg-elev);
     color: var(--text);
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -658,12 +729,136 @@ a:hover {
   }
   .filters-wrap.is-open {
     display: block;
+    margin-top: 14px;
+  }
+
+  /* Touch targets: everything interactive gets room for a finger, not a cursor. */
+  .reveal-btn {
+    min-height: 46px;
+    padding: 10px 20px;
+    font-size: 14.5px;
+  }
+  .pdf-link {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 14px 3px 30px;
+    font-size: 13px;
+  }
+  .pdf-link::before {
+    left: 12px;
+  }
+  .theme-toggle,
+  .print-btn {
+    min-height: 44px;
+  }
+  .print-btn {
+    padding: 0 16px;
+  }
+  .seg {
+    padding: 10px 10px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+  .chip {
+    min-width: 42px;
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  .dzial-item {
+    padding: 9px 8px;
+    min-height: 40px;
+    font-size: 13.5px;
+  }
+  .dzial-item input {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+  .clear-btn {
+    padding: 10px 10px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+  .search-input,
+  .select-input {
+    padding: 11px 12px;
+    font-size: 15px;
+  }
+  .card {
+    padding: 16px 16px 18px;
+  }
+  .page-btn {
+    min-width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .brand {
+    gap: 10px;
+  }
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+    font-size: 22px;
+    border-radius: 10px;
   }
   .brand-text h1 {
-    font-size: 16px;
+    font-size: 15px;
   }
   .brand-text p {
+    font-size: 10.5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+  .print-btn-label {
+    display: none;
+  }
+  .print-btn {
+    padding: 0;
+    width: 40px;
+    justify-content: center;
+  }
+  .theme-toggle,
+  .print-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .layout {
+    padding: 14px 12px 40px;
+  }
+  .card {
+    padding: 14px 14px 16px;
+    border-radius: 12px;
+  }
+  .crumbs {
     font-size: 11px;
+  }
+  .tresc {
+    font-size: 15px;
+  }
+  .results-head strong {
+    font-size: 19px;
+  }
+  .odpowiedz {
+    padding: 13px 14px;
+  }
+  .mathhtml table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -675,7 +870,8 @@ a:hover {
   .site-footer,
   .reveal-btn,
   .theme-toggle,
-  .print-btn {
+  .print-btn,
+  .pagination {
     display: none !important;
   }
   .layout {
