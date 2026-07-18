@@ -578,11 +578,16 @@ a:hover {
   background: var(--bg-soft);
   font-weight: 700;
 }
-.mathhtml svg {
-  max-width: 100%;
+/* Figure diagrams (tagged .fig-svg in the data). Scoped to that class so this
+   never touches KaTeX's own internal SVGs (e.g. the \sqrt radical glyph, which
+   uses a 400000-wide viewBox and must stay inline). Cap + centre them so they
+   stay crisp — stretching a ~400-unit viewBox to full card width thins the
+   strokes and spreads the labels. */
+.mathhtml svg.fig-svg {
+  max-width: min(100%, 430px);
   height: auto;
   display: block;
-  margin: 12px auto;
+  margin: 18px auto;
   color: var(--text);
 }
 .fig-note {
