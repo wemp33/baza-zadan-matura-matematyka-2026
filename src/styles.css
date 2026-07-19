@@ -19,10 +19,6 @@
   --radius: 14px;
   --radius-sm: 9px;
   --maxw: 1180px;
-  /* figure "graph paper" background */
-  --fig-bg: #fcfcfe;
-  --fig-grid: #e7e4f0;
-  --fig-grid-major: #d8d3e8;
 }
 
 :root[data-theme='dark'] {
@@ -43,9 +39,6 @@
   --warn: #fbbf24;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --fig-bg: #14131b;
-  --fig-grid: #262433;
-  --fig-grid-major: #322f42;
 }
 
 * {
@@ -72,6 +65,28 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+
+/* Snappy touch: no 300ms tap delay, and a subtle press feedback (there is no
+   :hover on touch devices, so :active is what gives tactile response). */
+button,
+a,
+input,
+select,
+label,
+.seg,
+.chip {
+  touch-action: manipulation;
+}
+.seg:active,
+.chip:active,
+.page-btn:active,
+.reveal-btn:active,
+.filters-mobile-toggle:active,
+.print-btn:active,
+.theme-toggle:active,
+.clear-btn:active {
+  transform: scale(0.97);
 }
 
 /* ---------- Header ---------- */
@@ -381,10 +396,17 @@ a:hover {
   color: var(--text-faint);
   font-size: 13px;
 }
+.results {
+  min-width: 0;
+}
 .cards {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
+}
+.card {
+  min-width: 0;
 }
 
 /* ---------- Pagination ---------- */
@@ -591,21 +613,16 @@ a:hover {
    stay crisp — stretching a ~400-unit viewBox to full card width thins the
    strokes and spreads the labels. */
 .mathhtml svg.fig-svg {
-  max-width: min(100%, 430px);
+  max-width: min(100%, 420px);
   height: auto;
   display: block;
-  margin: 18px auto;
+  margin: 16px auto;
   color: var(--text);
-  /* light "kratka" graph-paper background */
-  background-color: var(--fig-bg);
-  background-image:
-    linear-gradient(var(--fig-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--fig-grid) 1px, transparent 1px);
-  background-size: 17px 17px;
+  /* clean framed panel — no grid */
+  background: var(--bg-soft);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 12px;
+  padding: 12px;
 }
 .fig-note {
   color: var(--warn);
@@ -726,7 +743,9 @@ a:hover {
 ------------------------------------ */
 @media (max-width: 1024px) {
   .layout {
-    grid-template-columns: 1fr;
+    /* minmax(0,1fr) — NOT plain 1fr — so a wide child (e.g. an SVG figure's
+       intrinsic width) can't force the column past the viewport width. */
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
   .filters-mobile-toggle {
@@ -752,6 +771,28 @@ a:hover {
   .filters-wrap.is-open {
     display: block;
     margin-top: 14px;
+  }
+  /* Keep the opened filter panel from burying the results: cap its height and
+     let it scroll internally instead of stacking ~1100px of controls. */
+  .filters-wrap.is-open .filters {
+    max-height: 72vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dzialy-list {
+    max-height: none;
+  }
+  .filters-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 11px;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    font-size: 12px;
+    font-weight: 800;
   }
 
   /* Touch targets: everything interactive gets room for a finger, not a cursor. */
@@ -806,7 +847,8 @@ a:hover {
   .search-input,
   .select-input {
     padding: 11px 12px;
-    font-size: 15px;
+    /* 16px prevents iOS Safari from auto-zooming the page on focus */
+    font-size: 16px;
   }
   .card {
     padding: 16px 16px 18px;

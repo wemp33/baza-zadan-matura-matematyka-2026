@@ -142,6 +142,16 @@ export default function App() {
     return { dzialy }
   }, [tasks, filters])
 
+  const activeFilterCount =
+    (filters.q.trim() ? 1 : 0) +
+    (filters.rok !== 'all' ? 1 : 0) +
+    (filters.termin !== 'all' ? 1 : 0) +
+    (filters.poziom !== 'all' ? 1 : 0) +
+    (filters.formulaTier !== 'all' ? 1 : 0) +
+    (filters.typ !== 'all' ? 1 : 0) +
+    filters.dzialy.length +
+    filters.punkty.length
+
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
   const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
@@ -189,8 +199,10 @@ export default function App() {
           className="filters-mobile-toggle"
           type="button"
           onClick={() => setShowFilters((v) => !v)}
+          aria-expanded={showFilters}
         >
           {showFilters ? 'Ukryj filtry' : 'Pokaż filtry'}
+          {activeFilterCount > 0 && <span className="filters-count">{activeFilterCount}</span>}
         </button>
 
         <div className={`filters-wrap ${showFilters ? 'is-open' : ''}`}>
