@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import TaskCard from './components/TaskCard.jsx'
 import Filters from './components/Filters.jsx'
 import { DZIALY_KOLEJNOSC, examOrder } from './meta.js'
@@ -159,8 +159,26 @@ export default function App() {
   const goToPage = (p) => {
     const next = Math.min(Math.max(1, p), totalPages)
     setPage(next)
-    document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  // After a page change, jump back to the top of the task list. On desktop the
+  // list is its own scroll pane; on mobile it's the page. Done in an effect so
+  // it runs after the new page has rendered (a smooth scroll during the swap is
+  // cancelled by the re-render). Skipped on first mount so the page doesn't jump.
+  const firstRender = useRef(true)
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+    const el = document.querySelector('.results')
+    if (!el) return
+    if (el.scrollHeight > el.clientHeight + 4) {
+      el.scrollTop = 0
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [page])
 
   return (
     <div className="app">

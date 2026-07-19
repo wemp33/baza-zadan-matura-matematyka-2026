@@ -737,10 +737,52 @@ label,
 
 /* ---------- Responsive ----------
    Breakpoints:
-     >1024px  desktop  — persistent sidebar
+     >1024px  desktop  — fixed app-shell, filter bar & task list scroll independently
      ≤1024px  tablet   — drawer filters, single column, roomy touch targets
      ≤640px   phone    — tablet rules + extra compaction
 ------------------------------------ */
+
+/* Desktop app-shell: the page itself does not scroll; the filter sidebar and
+   the task list are each their own scroll pane, so scrolling one never moves
+   the other. Header stays pinned on top, footer pinned at the bottom. */
+@media (min-width: 1025px) {
+  .app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .site-header {
+    position: static;
+    flex: none;
+  }
+  .layout {
+    flex: 1 1 auto;
+    min-height: 0; /* lets the grid children establish their own scroll */
+    width: 100%;
+    overflow: hidden;
+    align-items: stretch;
+    padding-top: 22px;
+    padding-bottom: 0;
+  }
+  .filters-wrap {
+    position: static;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 2px 10px 24px 2px;
+  }
+  .results {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 6px 44px 0;
+  }
+  .site-footer {
+    flex: none;
+  }
+}
+
 @media (max-width: 1024px) {
   .layout {
     /* minmax(0,1fr) — NOT plain 1fr — so a wide child (e.g. an SVG figure's
